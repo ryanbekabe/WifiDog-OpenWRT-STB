@@ -15,28 +15,29 @@ foreach($_SERVER as $key_name => $key_value) {
 $requestbody = "\nRequest body:\n" . file_get_contents('php://input') . "\n";
 #/login/?gw_address=192.168.1.1&gw_port=2060&gw_id=hanyajasacom.net&ip=192.168.1.133&mac=98:22:ef:44:20:a6&url=http%3A%2F%2Fwww.msftconnecttest.com%2Fredirect
 $getIp=$_GET['ip'];
-$getMacURI=strtoupper($_GET['mac']);
-$macAddr=false;
+//$getMacURI=strtoupper($_GET['mac']);
+$getMacURI=str_replace(":",".",strtoupper($_GET['mac']));
+//$macAddr=false;
 #run the external command, break output into lines
-$MAC = exec('getmac');
-$MACx = exec('ifconfig | grep HWaddr');
-$arp=`arp -a $ip`;
+//$MAC = exec('getmac');
+//$MACx = exec('ifconfig | grep HWaddr');
 //echo $getIp;
 //echo '<br>';
-echo $getMacURI;
+//echo $getMacURI;
 //echo '<br>';
-$lines=explode("\n", $arp);
+//$arp=`arp -a $ip`;
+//$lines=explode("\n", $arp);
 #look for the output line describing our IP address
-foreach($lines as $line)
-{
-   $cols=preg_split('/\s+/', trim($line));
-   if ($cols[0]==$ipAddress)
-   {
-       $macAddr=$cols[1];
+//foreach($lines as $line)
+//{
+//   $cols=preg_split('/\s+/', trim($line));
+//   if ($cols[0]==$ipAddress)
+//   {
+//       $macAddr=$cols[1];
        //echo $macAddr;
-   }
-}
-file_put_contents($targetFile, $VarHeader . $headerList . $macAddr . $MAC . $requestbody);
+//   }
+//}
+file_put_contents($targetFile, $VarHeader . $headerList . $requestbody);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -78,6 +79,8 @@ file_put_contents($targetFile, $VarHeader . $headerList . $macAddr . $MAC . $req
 										<form name="sendin" action="" method="post">
 											<input type="hidden" name="username" />
 											<input type="hidden" name="password" />
+											<input type="text" name="valip" value="<?php echo $getIp; ?>"/>
+											<input type="text" name="valmac" value="<?php echo $getMacURI; ?>"/>
 											<input type="hidden" name="dst" value="http://www.msftconnecttest.com/redirect" />
 											<input type="hidden" name="popup" value="true" />
 										</form>
